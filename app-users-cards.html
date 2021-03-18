@@ -1,0 +1,42 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="./app-user-card.html">
+
+<dom-module id="app-users-cards">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <template is="dom-repeat" items="{{users}}" as="user">
+      <app-user-card on-show-address="emmitUser" user="[[user]]"></app-user-card>
+    </template>
+  </template>
+
+  <script>
+    class AppUsersCards extends Polymer.Element {
+      static get is() {
+        return 'app-users-cards';
+      }
+      static get properties() {
+        return {
+          users: {
+            type: Array,
+            value: []
+          }
+        };
+      }
+      emmitUser(e) {
+        console.log(e);
+        this.dispatchEvent(new CustomEvent('show-address-secondary', {
+          detail: e.detail
+        }));
+      }
+    }
+
+
+    window.customElements.define(AppUsersCards.is, AppUsersCards);
+  </script>
+</dom-module>

@@ -1,0 +1,59 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<dom-module id="app-user-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-button {
+        background-color: black;
+      }
+
+      paper-card {
+        background-color: black;
+      }
+    </style>
+    <paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+      <div class="card-content">
+        [[user.name]]
+      </div>
+      <div class="card-actions">
+        <paper-button on-click="showInfo">Share</paper-button>
+        <paper-button>Explore!</paper-button>
+      </div>
+    </paper-card>
+  </template>
+
+  <script>
+    class AppUserCard extends Polymer.Element {
+      static get is() {
+        return 'app-user-card';
+      }
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+            value: {}
+          }
+        };
+      }
+      showInfo() {
+        this.dispatchEvent(new CustomEvent('show-address', {
+          detail: {
+            lat: this.get('user.address.geo.lat'),
+            lng: this.get('user.address.geo.lng'),
+            city: this.get('user.address.city'),
+            street: this.get('user.address.street'),
+            name: this.get('user.name')
+          }
+        }));
+      }
+    }
+
+    window.customElements.define(AppUserCard.is, AppUserCard);
+  </script>
+</dom-module>
