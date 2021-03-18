@@ -6,6 +6,7 @@
       :host {
         display: block;
         --map-height: 80vh;
+        --position-box: 0;
       }
 
       #map {
@@ -38,10 +39,10 @@
       .map-record {
         max-width: 200px;
         background-color: white;
-        height: 100px;
+        max-height: 100px;
         color: black;
         position: absolute;
-        bottom: 0;
+        bottom: var(--position-box);
         right: 50%;
         z-index: 3;
         display: flex;
@@ -54,16 +55,7 @@
         border-radius: 1rem;
         font-weight: 400;
         font-size: 20px;
-      }
-
-      .top {
-        position: absolute;
-        top: 0;
-      }
-
-      .bottom {
-        position: absolute;
-        bottom: 0;
+        transform: translateX(50%);
       }
     </style>
     <div class="map-container">
@@ -72,7 +64,7 @@
         <div class="map-address">
           [[direccion]]
         </div>
-        <div class$="map-record [[position]]">
+        <div class="map-record">
           [[record]]
         </div>
       </template>
@@ -113,10 +105,6 @@
           record: {
             type: Array,
             value: [],
-          },
-          position: {
-            type: String,
-            computed: 'getPosition(position)'
           }
         };
       }
@@ -126,10 +114,6 @@
           '_setMarker(lat,lng)',
           '_newRecord(lat,lng)'
         ]
-      }
-
-      getPosition(position) {
-        return `${position}`
       }
 
       _newRecord(lat, lng) {
@@ -195,15 +179,6 @@
         if (lat && lng) {
           this.createMarker(lat, lng);
         }
-      }
-
-      setLocation(latLng, pathImage) {
-        L.marker(latLng, {
-          icon: L.icon({
-            iconSize: [50, 50],
-            iconUrl: pathImage
-          })
-        }).addTo(this.get('map'));
       }
 
       loadStyles() {
