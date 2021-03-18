@@ -35,9 +35,9 @@
     </style>
 
     <main>
+      <app-users-cards class="app-cards" on-show-address-secondary="getUser" users="[[users]]"></app-users-cards>
       <app-map id="map" lat="[[lat]]" lng="[[lng]]" name="[[name]]" city="[[city]]" street="[[street]]">
       </app-map>
-      <app-users-cards class="app-cards" on-show-address-secondary="getUser" users="[[users]]"></app-users-cards>
     </main>
   </template>
 
@@ -98,7 +98,6 @@
           city: e.detail.city,
           street: e.detail.street
         })
-        console.log(e);
       }
 
       async loadUserInfo() {

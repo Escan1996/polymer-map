@@ -62,7 +62,7 @@
       <div id="map"></div>
       <template is="dom-if" if="{{record.length}}">
         <div class="map-address">
-          [[direccion]]
+          [[direction]]
         </div>
         <div class="map-record">
           [[record]]
@@ -98,7 +98,7 @@
           street: {
             type: String
           },
-          direccion: {
+          direction: {
             type: Array,
             computed: 'getAddress(city,street)'
           },

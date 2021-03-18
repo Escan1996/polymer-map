@@ -29,7 +29,6 @@
         };
       }
       emmitUser(e) {
-        console.log(e);
         this.dispatchEvent(new CustomEvent('show-address-secondary', {
           detail: e.detail
         }));
