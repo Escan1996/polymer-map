@@ -13,28 +13,72 @@
         position: relative;
         z-index: 1;
       }
+
+      .map-container {
+        position: relative;
+      }
+
+      .map-address {
+        background-color: white;
+        width: 200px;
+        height: 100px;
+        color: black;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 1rem;
+        font-weight: 800;
+      }
+
+      .map-record {
+        max-width: 200px;
+        background-color: white;
+        height: 100px;
+        color: black;
+        position: absolute;
+        bottom: 0;
+        right: 50%;
+        z-index: 3;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        overflow: auto;
+        text-align: center;
+        border-radius: 1rem;
+        font-weight: 400;
+        font-size: 20px;
+      }
+
+      .top {
+        position: absolute;
+        top: 0;
+      }
+
+      .bottom {
+        position: absolute;
+        bottom: 0;
+      }
     </style>
-    <div>
+    <div class="map-container">
       <div id="map"></div>
-      <div>
-        
-      </div>
-      <div>
-
-      </div>
+      <template is="dom-if" if="{{record.length}}">
+        <div class="map-address">
+          [[direccion]]
+        </div>
+        <div class$="map-record [[position]]">
+          [[record]]
+        </div>
+      </template>
     </div>
-
   </template>
-
   <script>
-    /**
-     * `landing-page`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
     class AppMap extends Polymer.Element {
       static get is() {
         return 'app-map';
@@ -65,6 +109,14 @@
           direccion: {
             type: Array,
             computed: 'getAddress(city,street)'
+          },
+          record: {
+            type: Array,
+            value: [],
+          },
+          position: {
+            type: String,
+            computed: 'getPosition(position)'
           }
         };
       }
@@ -72,8 +124,26 @@
       static get observers() {
         return [
           '_setMarker(lat,lng)',
-          'getData(name)'
+          '_newRecord(lat,lng)'
         ]
+      }
+
+      getPosition(position) {
+        return `${position}`
+      }
+
+      _newRecord(lat, lng) {
+        this.addRecord(lat, lng);
+      }
+
+      addRecord(lat, lng) {
+        if (lat && lng) {
+          this.push('record', `${lat} ${lng}`);
+        }
+      }
+
+      getAddress(city, street) {
+        return `${city} ${street}`
       }
 
       connectedCallback() {
@@ -85,18 +155,12 @@
           .catch(err => console.error(err));
       }
 
-      getData(name) {
-        console.log(name);
-      }
-
       async loadResources() {
         await this.loadStyles();
         await this.loadScript();
       }
-      // 19.408117606898315, -99.18758722213126
+
       createMap() {
-        //this.shadowRoot.querySelector("#map")
-        //this.shadowRoot.getElementById('map')
         let map = L.map(this.$.map).setView([19.432241, -99.177254], 13);
         L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -105,10 +169,6 @@
         this.set('map', map);
         let marker = L.marker([19.427136953672232, -99.16766908811194], {
           icon: L.icon({
-            // iconSize: [25, 41],
-            // iconAnchor: [10, 41],
-            // popupAnchor: [2, -40],
-            // path to url and shadow url
             iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
             shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png"
           })
@@ -117,14 +177,9 @@
       }
 
       createMarker(lat, lng) {
-
         if (!this.get('marker')) {
           let marker = L.marker([lat, lng], {
             icon: L.icon({
-              // iconSize: [25, 41],
-              // iconAnchor: [10, 41],
-              // popupAnchor: [2, -40],
-              // path to url and shadow url
               iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
               shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png"
             })
@@ -146,25 +201,9 @@
         L.marker(latLng, {
           icon: L.icon({
             iconSize: [50, 50],
-            // iconAnchor: [10, 41],
-            // popupAnchor: [2, -40],
-            // path to url and shadow url
             iconUrl: pathImage
           })
         }).addTo(this.get('map'));
-      }
-
-      _setPolyline(newValue, oldValue) {
-        let refMap = this.get('map');
-        let polyline = L.polyline(newValue, {
-          color: 'red'
-        }).addTo(refMap);
-        refMap.fitBounds(polyline.getBounds());
-        this.setLocation(newValue[0],
-          'https://png.pngtree.com/png-clipart/20190516/original/pngtree-vector-shop-icon-png-image_3762863.jpg'
-        );
-        this.setLocation(newValue[newValue.length - 1],
-          'https://www.iconpacks.net/icons/1/free-home-icon-189-thumb.png');
       }
 
       loadStyles() {

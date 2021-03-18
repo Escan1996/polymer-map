@@ -8,32 +8,14 @@
 <dom-module id="app-root">
   <template>
     <style>
-      :host {
-        display: grid;
-        height: 100%;
-        grid-template-rows: auto 1fr auto;
-        font-family: sans-serif;
-        --dialog-background: darkgreen;
-      }
-
-      header {
-        background-color: rgb(24, 128, 146);
-        color: white;
-        padding: 2rem;
-      }
-
       main {
-        background-color: darkgreen;
+        background-color: rgb(226, 216, 221);
         color: white;
         padding: 2rem;
       }
 
       app-card[image-path*="tsuru"] {
         border: 4px solid red;
-      }
-
-      h1 {
-        font-size: 2rem;
       }
 
       app-card {
@@ -49,38 +31,24 @@
         font-size: 1.2rem;
       }
 
-      .wrapper-user-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 280px));
-        justify-content: center;
-        grid-auto-rows: 320px;
-        column-gap: 1rem;
-        row-gap: 1rem;
-      }
-
       app-map {
         --map-height: 600px;
       }
 
-      app-dialog {
-        --header-background: var(--dialog-background);
-        --header-font-color: white;
-      }
-
-      app-users-cards {
-        max-width: 200px;
+      .app-cards {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
       }
     </style>
 
     <main>
-      <button on-click="showUsers">Mostrar usuarios en consola</button>
-      <app-map id="map" lat="[[lat]]" lng="[[lng]]" name="[[name]]" city="[[city]]" street="[[street]]">
+      <app-map position="bottom" id="map" lat="[[lat]]" lng="[[lng]]" name="[[name]]" city="[[city]]"
+        street="[[street]]">
       </app-map>
-      <app-users-cards on-show-address-secondary="getUser" users="[[users]]"></app-users-cards>
+      <app-users-cards class="app-cards" on-show-address-secondary="getUser" users="[[users]]"></app-users-cards>
     </main>
   </template>
-  
-
 
   <script>
     class AppRoot extends Polymer.Element {
@@ -138,12 +106,6 @@
         this.set('city', e.detail.city);
         this.set('street', e.detail.street);
         console.log(e);
-      }
-
-      showUsers() {
-        this.loadUserInfo().then(() => {
-          console.log(this.users);
-        })
       }
 
       async loadCoords() {

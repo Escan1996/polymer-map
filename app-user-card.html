@@ -9,22 +9,84 @@
         display: block;
       }
 
-      paper-button {
-        background-color: black;
+      paper-card {
+        background-color: white;
+        color: black;
+        margin: 10px;
+        border-radius: 1rem;
+        width: 250px;
+        height: 350px;
+        border-color: black;
+        text-align: center;
+
       }
 
-      paper-card {
-        background-color: black;
+      .header {
+        display: flex;
+        justify-content: center;
+        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk4E5zbiOzIlqxa2JaIBij0OT-YJcBpomP8Q&usqp=CAU");
+        border-radius: 1rem;
+      }
+
+      .header-img {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        border-radius: 50%;
+        max-width: 100px;
+      }
+
+      .address-button {
+        display: flex;
+        justify-content: center;
+      }
+
+      .address-button paper-button {
+        font-size: 10px;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: purple;
+        color: white;
+        border-radius: 1rem;
+        font-weight: 800;
+      }
+
+      .paper-name {
+        font-weight: 800;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+
+      .card-content {
+        background-color: white;
       }
     </style>
-    <paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+    <paper-card>
+      <div class="header">
+        <img class="header-img" src={{user.imagePath}}>
+      </div>
       <div class="card-content">
-        [[user.name]]
+        <div class="paper-name">
+          [[user.name]]
+        </div>
+        <div>
+          City: [[user.address.city]]
+        </div>
+        <div>
+          Street: [[user.address.street]]
+        </div>
+        <div>
+          Lat: [[user.address.geo.lat]]
+        </div>
+        <div>
+          Lng: [[user.address.geo.lng]]
+        </div>
       </div>
-      <div class="card-actions">
-        <paper-button on-click="showInfo">Share</paper-button>
-        <paper-button>Explore!</paper-button>
-      </div>
+      <template is="dom-if" if="{{showAddress}}">
+        <div class="address-button">
+          <paper-button on-click="showInfo">Ver ubicación</paper-button>
+        </div>
+      </template>
     </paper-card>
   </template>
 
@@ -38,9 +100,24 @@
           user: {
             type: Object,
             value: {}
+          },
+          showAddress: {
+            type: Boolean,
+            value: false
           }
         };
       }
+      connectedCallback() {
+        super.connectedCallback();
+        this.isPar();
+      }
+
+      isPar() {
+        if (this.user.id % 2 == 1) {
+          this.set('showAddress', true);
+        }
+      }
+
       showInfo() {
         this.dispatchEvent(new CustomEvent('show-address', {
           detail: {
